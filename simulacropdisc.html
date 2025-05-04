@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario</title>
+    <link rel="stylesheet" href="estilo.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+}
+
+#questionsContainer {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.question {
+    margin-bottom: 20px;
+}
+
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.correct {
+    color: rgb(248, 248, 248);
+    background: rgb(0, 255, 34);
+}
+
+.incorrect {
+    color: rgba(15, 0, 0, 0.809);
+    background: #fa1010;
+}
+
+    </style>
+
+
+
+
+</head>
+<body>
+
+<div id="questionsContainer"></div>
+<button onclick="Corroborar()" id="btn">Corroborar respuestas</button>
+<h1 id="resultado"></h1>
+<script>
+
+    let usuarios=[];
+    for(let i=0;i<1;i++)
+    {
+        usuarios[i]=prompt("Ingrese apellido del integrante :")
+
+
+    }
+    const preguntas = [
+    
+        {
+            pregunta: "JavaScript  es:",
+            opciones: ["Un lenguaje de programación", "un lenguaje de programación tipado dinámicamente", "un lenguaje pra maquetar paginas web"],
+            respuestaCorrecta: "un lenguaje de programación tipado dinámicamente"
+        },
+
+
+        {
+            pregunta: "¿Qué devuelve el siguiente código? <br>console.log(a=5)",
+            opciones: ["int", "5", "Number"],
+            respuestaCorrecta: "5"
+        },
+        {
+            pregunta: "Indica el carácter utilizado para hacer comentario de una línea",
+            opciones: ["/", "/* */", "//"],
+            respuestaCorrecta: "//"
+        },
+        {
+            pregunta: "Convierte a número:",
+            opciones: ["alert", "prompt", "Number"],
+            respuestaCorrecta: "Number"
+        },
+        {
+            pregunta: "¿Cuál es el resultado del siguiente código?  <br>let a=5,b=5<br> let c<br> c=a+b<br> console.log(c)",
+            opciones: ["55", "undefined", "10"],
+            respuestaCorrecta: "10"
+        }
+        ,
+        {
+            pregunta: "Las variables declaradas de este manera no podrá ser modificado su valor",
+            opciones: ["const", "let", "var"],
+            respuestaCorrecta: "const"
+        }
+
+        ,
+        {
+            pregunta: "Si quiero guardar el valor numérico de la siguiente variable <br> let dato = \"1234.12sala3\" <br>debo utilizar:",
+            opciones: ["Number", "parseInt", "prompt"],
+            respuestaCorrecta: "parseInt"
+        }
+
+        ,
+        {
+            pregunta: "¿Para averiguar el tipo de dato se debe utilizar la herramienta",
+            opciones: ["Number", "console.log(typeof())", "typeof"],
+            respuestaCorrecta: "typeof"
+        }
+
+        ,
+        {
+            pregunta: "let a=true;<br> ¿El tipo de dato es :",
+            opciones: ["bool", "int", "Number"],
+            respuestaCorrecta: "bool"
+        }
+
+        ,
+        {
+            pregunta: "Para vincular html con js utilizamos la etiqueta:",
+            opciones: ["a", "link", "script"],
+            respuestaCorrecta: "script"
+        }
+    ];
+
+    const questionsContainer = document.getElementById("questionsContainer");
+
+    preguntas.forEach((pregunta, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "question";
+        questionDiv.innerHTML = `
+            <h3>Pregunta ${index + 1}</h3>
+            <p>${pregunta.pregunta}</p>
+            <form id="form${index}">
+                ${pregunta.opciones.map((opcion, i) => `
+                    <input type="radio" id="opcion${index}${i}" name="pregunta${index}" value="${opcion}">
+                    <label for="opcion${index}${i}">${opcion}</label><br>`).join("")}
+            </form>
+        `;
+        questionsContainer.appendChild(questionDiv);
+    });
+let resultadofinal=document.getElementById('resultado');
+    function Corroborar() {
+
+   
+        const respuestasCorrectas = preguntas.map(pregunta => pregunta.respuestaCorrecta);
+        let respuestasSeleccionadas = [];
+
+        for (let i = 0; i < preguntas.length; i++) {
+            const radios = document.getElementsByName(`pregunta${i}`);
+            let respuestaSeleccionada;
+            for (let j = 0; j < radios.length; j++) {
+                if (radios[j].checked) {
+                    respuestaSeleccionada = radios[j].value;
+                    radios[j].disabled = true; // Deshabilitar el elemento de radio después de seleccionar
+                    break;
+                }
+            }
+            respuestasSeleccionadas.push(respuestaSeleccionada);
+        }
+
+        let puntaje = 0;
+        for (let i = 0; i < respuestasCorrectas.length; i++) {
+            const radios = document.getElementsByName(`pregunta${i}`);
+            if (respuestasSeleccionadas[i] === respuestasCorrectas[i]) {
+                radios.forEach(radio => {
+                    if (radio.value === respuestasSeleccionadas[i]) {
+                        radio.nextElementSibling.classList.add('correct');
+                        radio.checked=false
+                    }
+                });
+                puntaje++;
+            } else {
+                radios.forEach(radio => {
+                    if (radio.checked) {
+                        radio.nextElementSibling.classList.add('incorrect');
+                        radio.checked=false;
+                    }
+                });
+            }
+        }
+        resultadofinal.innerHTML="Hola :  "+ usuarios+"  " + "<br>Su puntaje es :"+puntaje;
+  
+    }
+</script>
+
+</body>
+</html>
